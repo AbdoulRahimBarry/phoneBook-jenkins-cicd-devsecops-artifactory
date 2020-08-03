@@ -10,8 +10,8 @@ var_repository_github: "https://github.com/AbdoulRahimBarry/crud-application-usi
 house: "/home/centos"
 
 # server preprod
-adresse_preprod: "172.18.0.1"
-port_preprod: "8181"
+#adresse_preprod: "172.18.0.1"
+#port_preprod: "8181"
 
 # server resistry private
 ip_resistry: "34.232.68.227"

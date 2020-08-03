@@ -1,7 +1,7 @@
 # connect to docker hub
 - name: Log into DockerHub
   docker_login:
-    registry: http://{{ ip_resistry }}:{{ port_resistry }}
+    registry: "34.232.68.227:8082"
     username: "{{ var_docker_hub_login }}"
     password: "{{ var_docker_hub_password }}"
   tags:
