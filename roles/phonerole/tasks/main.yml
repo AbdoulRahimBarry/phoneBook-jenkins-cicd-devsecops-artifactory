@@ -1,5 +1,5 @@
 # Creact file	
-- name: Change file ownership, group and permissions
+- name: Crer to file ownership, group and permissions
   file:
     path: "{{ house }}/new_folder"
     state: directory
@@ -75,6 +75,8 @@
       path: "{{ house }}/new_folder"
       dockerfile: Dockerfile-app
     name: "{{ ip_resistry }}:{{ port_resistry }}/{{ repo_key }}/{{ name-image }}"
+    state: present
+    source: build
     tag: "{{ repository_tag }}"
   tags:
     - build
