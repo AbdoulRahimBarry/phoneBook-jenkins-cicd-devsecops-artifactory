@@ -9,13 +9,13 @@ var_repository_github: "https://github.com/AbdoulRahimBarry/crud-application-usi
 # other variable
 house: "/home/centos"
 
-# server preprod
-#adresse_preprod: "172.18.0.1"
-#port_preprod: "8181"
-
 # server resistry private
 ip_resistry: "34.232.68.227"
 port_resistry: "8082"
+
+# host preprod
+adresse_preprod: "3.84.140.11"
+port_preprod: "8181"
 
 repository_brach: "master"
 repository_tag: "1.0"
