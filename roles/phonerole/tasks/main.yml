@@ -1,0 +1,143 @@
+# connect to docker hub
+- name: Log into DockerHub
+  docker_login:
+    username: "{{ var_docker_hub_login }}"
+    password: "{{ var_docker_hub_password }}"
+  tags:
+    - build
+
+# Creact file	
+- name: Change file ownership, group and permissions
+  file:
+    path: "{{ house }}/new_folder"
+    state: directory
+  tags:
+    - build
+    - preprod
+
+# Copy private keys in target    
+- name: Copy file with owner and permissions
+  copy:
+    content: "{{ var_my_private_key }}"
+    dest: "{{ house }}/.ssh/id_rsa"
+    owner: centos
+  tags:
+    - build
+    - deploy
+    - preprod
+
+# Example git checkout from Ansible Playbooks
+- name: load the source code in github
+  git:
+    repo: "{{ var_repository_github }}"
+    dest: "{{ house }}/new_folder"
+    key_file: "{{ house }}/.ssh/id_rsa"
+    accept_hostkey: yes
+    force: yes
+    version: "{{ repository_brach }}"
+    recursive: no
+  tags:
+    - build
+
+- name: load the source code test_jmeter in github
+  git:
+    repo: "{{ repo_test_jmeter }}"
+    dest: "{{ house }}/new_folder"
+    key_file: "{{ house }}/.ssh/id_rsa"
+    accept_hostkey: yes
+    force: yes
+    version: "{{ repository_brach }}"
+    recursive: no
+  tags:
+    - preprod
+
+# Build image Dockerfile-app   
+- name: Build an image Dockerfile-app
+  docker_image:
+    build:
+      path: "{{ house }}/new_folder"
+      dockerfile: Dockerfile-app
+    name: "{{ var_docker_hub_login }}/app-image"
+    tag: "{{ repository_tag }}"
+  tags:
+    - build
+
+# Build image Dockerfile-mysql   
+- name: Build an image Dockerfile-mysql
+  docker_image:
+    build:
+      path: "{{ house }}/new_folder"
+      dockerfile: Dockerfile-mysql
+    name: "{{ var_docker_hub_login }}/mysql-image"
+    tag: "{{ repository_tag }}"
+  tags:
+    - build
+
+# Push Dockerfile-app image it to Docker Hub
+- name: Push Dockerfile-app image
+  docker_image:
+    path: "{{ house }}/new_folder/Dockerfile-app"
+    name: "{{ var_docker_hub_login }}/app-image"
+    push: yes
+    tag: "{{ repository_tag }}"
+  tags:
+    - build
+
+# Push Dockerfile-mysql image it to Docker Hub 
+- name: Push Dockerfile-mysql image
+  docker_image:
+    path: "{{ house }}/new_folder/Dockerfile-mysql"
+    name: "{{ var_docker_hub_login }}/mysql-image"
+    push: yes
+    tag: "{{ repository_tag }}"
+  tags:
+    - build
+
+# creact network   
+- name: Create a network
+  docker_network:
+    name: phone_network
+  tags:
+    - deploy
+    - preprod
+    - build
+
+# deploy phonebook-mysql   
+- name: Create a data container phonebook-mysql
+  docker_container:
+    name: phonebook-mysql
+    image: "{{ var_docker_hub_login }}/mysql-image:{{ repository_tag }}"
+    state: started
+    networks:
+      - name: phone_network
+  tags:
+    - deploy
+    - preprod
+
+- name: sleep for 30 seconds and continue with play
+  wait_for:
+    timeout: 30
+  tags:
+    - deploy
+    - preprod
+
+# deploy api  
+- name: Create a data container phonebook-app
+  docker_container:
+    name: phonebook-app
+    image: "{{ var_docker_hub_login }}/app-image:{{ repository_tag }}"
+    state: started
+    networks:
+      - name: phone_network
+    ports:
+     - "8181:8181"
+    restart: yes
+  tags:
+    - deploy
+    - preprod
+
+- name: Check that you can connect (GET) to a page and it returns a status 200
+  uri:
+    url: http://{{ adresse_preprod }}:{{ port_preprod }}
+  tags:
+    - testApi
