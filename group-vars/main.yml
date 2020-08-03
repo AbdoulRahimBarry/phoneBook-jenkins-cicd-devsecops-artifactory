@@ -5,7 +5,6 @@ var_docker_hub_password: "{{ vault_docker_hub_password }}"
 var_my_private_key: "{{ vault_my_private_key }}"
 
 var_repository_github: "https://github.com/AbdoulRahimBarry/crud-application-using-flask-and-mysql.git"
-repo_test_jmeter: "https://github.com/AbdoulRahimBarry/Test-jmeter.git"
 
 # other variable
 house: "/home/centos"
