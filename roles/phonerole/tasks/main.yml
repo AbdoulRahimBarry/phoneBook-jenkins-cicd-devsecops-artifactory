@@ -37,6 +37,23 @@
   tags:
     - preprod
 
+# Copy in server build the file daemon.json
+- name: Copy file daemon.json
+  copy:
+    src: daemon.json
+    dest: "/etc/docker"
+    owner: centos
+    remote_src: no
+  tags:
+    - build
+
+- name: Restart service docker
+  service:
+    name: docker
+    state: restarted
+  tags:
+    - build
+
 # Example git checkout from Ansible Playbooks
 - name: load the source code in github
   git:
