@@ -12,9 +12,6 @@ house: "/home/centos"
 # server resistry private
 ip_resistry: "34.232.68.227"
 port_resistry: "8082"
-repo_key: "barry"
-name-imagei1: "app-image"
-name-imagei2: "mysql-image"
 
 # host preprod
 adresse_preprod: "3.84.140.11"
