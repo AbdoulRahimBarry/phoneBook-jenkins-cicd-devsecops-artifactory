@@ -1,12 +1,3 @@
-# connect to docker hub
-- name: Log into DockerHub
-  docker_login:
-    registry: "{{ ip_resistry }}:{{ port_resistry }}"
-    username: "{{ var_docker_hub_login }}"
-    password: "{{ var_docker_hub_password }}"
-  tags:
-    - build
-
 # Creact file	
 - name: Change file ownership, group and permissions
   file:
@@ -53,6 +44,16 @@
     state: restarted
   tags:
     - build
+
+# connect to docker hub
+- name: Log into DockerHub
+  docker_login:
+    registry: "{{ ip_resistry }}:{{ port_resistry }}"
+    username: "{{ var_docker_hub_login }}"
+    password: "{{ var_docker_hub_password }}"
+  tags:
+    - build
+
 
 # Example git checkout from Ansible Playbooks
 - name: load the source code in github
