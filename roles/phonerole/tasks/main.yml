@@ -56,8 +56,8 @@
     build:
       path: "{{ house }}/new_folder"
       dockerfile: Dockerfile-app
-    name: "app-image"
-    tag: "app-image 34.232.68.227:8082/barry/app-image:latest"
+    name: "{{ ip_resistry }}:{{ port_resistry }}/{{ repo_key }}/{{ name-image }}"
+    tag: "{{ repository_tag }}"
   tags:
     - build
 
@@ -67,8 +67,8 @@
     build:
       path: "{{ house }}/new_folder"
       dockerfile: Dockerfile-mysql
-    name: "mysql-image"
-    tag: "mysql-image 34.232.68.227:8082/barry/mysql-image:latest"
+    name: "{{ ip_resistry }}:{{ port_resistry }}/{{ repo_key }}/{{ name-image2 }}"
+    tag: "{{ repository_tag }}"
   tags:
     - build
 
@@ -76,9 +76,9 @@
 - name: Push Dockerfile-app image
   docker_image:
     path: "{{ house }}/new_folder/Dockerfile-app"
-    name: "app-image"
+    name: "{{ ip_resistry }}:{{ port_resistry }}/{{ repo_key }}/{{ name-image1 }}"
     push: yes
-    tag: "app-image 34.232.68.227:8082/barry/app-image:latest"
+    tag: "{{ repository_tag }}"
   tags:
     - push
 
@@ -86,9 +86,9 @@
 - name: Push Dockerfile-mysql image
   docker_image:
     path: "{{ house }}/new_folder/Dockerfile-mysql"
-    name: "mysql-image"
+    name: "{{ ip_resistry }}:{{ port_resistry }}/{{ repo_key }}/{{ name-image2 }}"
     push: yes
-    tag: "mysql-image 34.232.68.227:8082/barry/mysql-image:latest"
+    tag: "{{ repository_tag }}"
   tags:
     - push
 
