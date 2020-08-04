@@ -118,36 +118,29 @@
     - preprod
     - build
 
-# deploy phonebook-mysql   
-- name: Create a data container phonebook-mysql
-  docker_container:
-    name: phonebook-mysql
-    image: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image:{{ repository_tag }}"
-    state: started
-    networks:
-      - name: phone_network
-  tags:
-    - deploy
-    - preprod
+- block:  
+  - name: Create a data container phonebook-mysql
+    docker_container:
+      name: phonebook-mysql
+      image: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image:{{ repository_tag }}"
+      state: started
+      networks:
+        - name: phone_network
 
-- name: sleep for 30 seconds and continue with play
-  wait_for:
-    timeout: 30
-  tags:
-    - deploy
-    - preprod
+  - name: sleep for 30 seconds and continue with play
+    wait_for:
+      timeout: 30
 
-# deploy api  
-- name: Create a data container phonebook-app
-  docker_container:
-    name: phonebook-app
-    image: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image:{{ repository_tag }}"
-    state: started
-    networks:
-      - name: phone_network
-    ports:
-     - "8181:8181"
-    restart: yes
+  - name: Create a data container phonebook-app
+    docker_container:
+      name: phonebook-app
+      image: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image:{{ repository_tag }}"
+      state: started
+      networks:
+        - name: phone_network
+      ports:
+       - "8181:8181"
+      restart: yes
   tags:
     - deploy
     - preprod
