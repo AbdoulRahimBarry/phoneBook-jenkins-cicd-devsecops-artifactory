@@ -72,7 +72,7 @@
     - build
     - deploy
 
-- block: 
+- block:
   - name: Build an image Dockerfile-app
     docker_image:
       build:
@@ -80,7 +80,7 @@
         dockerfile: Dockerfile-app
       name: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image"
       tag: "{{ repository_tag }}"
- 
+
   - name: Build an image Dockerfile-mysql
     docker_image:
       build:
@@ -157,4 +157,3 @@
     url: http://{{ adresse_preprod }}:{{ port_preprod }}
   tags:
     - testApi
-
