@@ -1,4 +1,3 @@
-# Creact file
 - name: Crer to file ownership, group and permissions
   file:
     path: "{{ house }}/new_folder"
@@ -70,7 +69,7 @@
     password: "{{ var_docker_hub_password }}"
   tags:
     - build
-    #- deploy
+    - deploy
 
 # Build image Dockerfile-app   
 - name: Build an image Dockerfile-app
