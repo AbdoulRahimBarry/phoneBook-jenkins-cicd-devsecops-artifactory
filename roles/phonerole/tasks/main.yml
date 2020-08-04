@@ -56,8 +56,8 @@
     - deploy
 
 # Block build
-- block:
-  - name: Block build, prepred and deploy
+- name: Block build, prepred and deploy
+  - block:
   # Example git checkout from Ansible Playbooks
   - name: git clone the source code in github
     git:
