@@ -30,7 +30,7 @@
       service:
         name: docker
         state: restarted
-      tags:
+    tags:
         - build
         - preprod
         - deploy
@@ -86,7 +86,7 @@
           dockerfile: Dockerfile-mysql
         name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
         tag: "{{ repository_tag }}"
-      tags:
+    tags:
         -  build
 
 # Block push
@@ -108,7 +108,7 @@
         name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
         push: yes
         tag: "{{ repository_tag }}"
-      tags:
+    tags:
         - push
 
 # creact network   
@@ -148,7 +148,7 @@
         ports:
          - "8181:8181"
         restart: yes
-      tags:
+    tags:
         - deploy
         - preprod
 
