@@ -38,7 +38,7 @@
   tags:
     - build
     - preprod
-    - prod
+    - deploy
 
 - name: Restart service docker
   service:
@@ -47,7 +47,7 @@
   tags:
     - build
     - preprod
-    - prod
+    - deploy
 
 # Example git checkout from Ansible Playbooks
 - name: git clone the source code in github
@@ -70,7 +70,6 @@
     password: "{{ var_docker_hub_password }}"
   tags:
     - build
-    - prod
 
 # Build image Dockerfile-app   
 - name: Build an image Dockerfile-app
