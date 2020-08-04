@@ -72,7 +72,7 @@
     - build
     - deploy
 
-block:   
+- block:   
   - name: Build an image Dockerfile-app
     docker_image:
       build:
