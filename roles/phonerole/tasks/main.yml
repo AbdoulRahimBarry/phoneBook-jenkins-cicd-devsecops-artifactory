@@ -93,7 +93,8 @@
 # Push Dockerfile-app image it to Docker Hub
 - name: Push Dockerfile-app image
   docker_image:
-    path: "{{ house }}/new_folder/Dockerfile-app"
+    path: "{{ house }}/new_folder"
+    dockerfile: Dockerfile-app
     name: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image"
     push: yes
     tag: "{{ repository_tag }}"
