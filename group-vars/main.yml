@@ -10,7 +10,7 @@ var_repository_github: "https://github.com/AbdoulRahimBarry/crud-application-usi
 house: "/home/centos"
 
 # server resistry private
-ip_resistry: "34.232.68.227"
+ip_resistry: "54.237.53.109"
 port_resistry: "8082"
 
 # host preprod
