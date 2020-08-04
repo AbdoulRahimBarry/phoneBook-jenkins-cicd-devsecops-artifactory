@@ -31,9 +31,9 @@
         name: docker
         state: restarted
     tags:
-        - build
-        - preprod
-        - deploy
+      - build
+      - preprod
+      - deploy
 
 # Copy in server prepred the planTest.jmx
 - name: Copy file planTest.jmx
@@ -87,7 +87,7 @@
         name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
         tag: "{{ repository_tag }}"
     tags:
-        -  build
+      -  build
 
 # Block push
 - name: block push
@@ -109,7 +109,7 @@
         push: yes
         tag: "{{ repository_tag }}"
     tags:
-        - push
+      - push
 
 # creact network   
 - name: Create a network
@@ -149,8 +149,8 @@
          - "8181:8181"
         restart: yes
     tags:
-        - deploy
-        - preprod
+      - deploy
+      - preprod
 
 - name: Check that you can connect (GET) to a page and it returns a status 200
   uri:
