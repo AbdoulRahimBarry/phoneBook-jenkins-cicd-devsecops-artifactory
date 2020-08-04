@@ -118,7 +118,7 @@
     - preprod
     - build
 
-- block:  
+- block:
   - name: Create a data container phonebook-mysql
     docker_container:
       name: phonebook-mysql
