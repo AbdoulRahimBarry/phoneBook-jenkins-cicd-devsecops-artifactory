@@ -70,6 +70,7 @@
     password: "{{ var_docker_hub_password }}"
   tags:
     - build
+    - prod
 
 # Build image Dockerfile-app   
 - name: Build an image Dockerfile-app
