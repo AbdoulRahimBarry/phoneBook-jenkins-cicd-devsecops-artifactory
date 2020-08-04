@@ -38,21 +38,12 @@
   tags:
     - build
     - preprod
+    - prod
 
 - name: Restart service docker
   service:
     name: docker
     state: restarted
-  tags:
-    - build
-    - preprod
-
-# connect to docker hub
-- name: Log into DockerHub
-  docker_login:
-    registry: "{{ ip_resistry }}:{{ port_resistry }}"
-    username: "{{ var_docker_hub_login }}"
-    password: "{{ var_docker_hub_password }}"
   tags:
     - build
     - preprod
@@ -69,6 +60,16 @@
     recursive: no
   tags:
     - build
+
+# connect to private registry
+- name: Log into private registry
+  docker_login:
+    registry: "{{ ip_resistry }}:{{ port_resistry }}"
+    username: "{{ var_docker_hub_login }}"
+    password: "{{ var_docker_hub_password }}"
+  tags:
+    - build
+    - preprod
 
 # Build image Dockerfile-app   
 - name: Build an image Dockerfile-app
