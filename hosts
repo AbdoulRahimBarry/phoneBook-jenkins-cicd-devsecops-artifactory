@@ -5,4 +5,4 @@
 100.25.118.62 ansible_user=centos ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [prod]
-54.158.135.171 ansible_user=centos ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+100.26.174.59 ansible_user=centos ansible_ssh_common_args='-o StrictHostKeyChecking=no'
