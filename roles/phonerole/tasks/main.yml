@@ -5,7 +5,6 @@
     state: directory
   tags:
     - build
-    - preprod
 
 # Copy private keys in target    
 - name: Copy file with owner and permissions
@@ -54,7 +53,7 @@
     password: "{{ var_docker_hub_password }}"
   tags:
     - build
-
+    - preprod
 
 # Example git checkout from Ansible Playbooks
 - name: git clone the source code in github
