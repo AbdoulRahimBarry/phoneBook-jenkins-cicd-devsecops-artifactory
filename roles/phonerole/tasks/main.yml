@@ -7,7 +7,7 @@
     - build
     -preprod
 
-# Copy private keys in target    
+# Copy private keys in target 
 - name: Copy file with owner and permissions
   copy:
     content: "{{ var_my_private_key }}"
