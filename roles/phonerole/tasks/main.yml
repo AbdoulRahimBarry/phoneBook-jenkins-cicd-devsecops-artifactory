@@ -1,13 +1,5 @@
-# connect to docker hub
-- name: Log into DockerHub
-  docker_login:
-    username: "{{ var_docker_hub_login }}"
-    password: "{{ var_docker_hub_password }}"
-  tags:
-    - build
-
-# Creact file	
-- name: Change file ownership, group and permissions
+# Creact file
+- name: Crer to file ownership, group and permissions
   file:
     path: "{{ house }}/new_folder"
     state: directory
@@ -15,7 +7,7 @@
     - build
     - preprod
 
-# Copy private keys in target    
+# Copy private keys in target
 - name: Copy file with owner and permissions
   copy:
     content: "{{ var_my_private_key }}"
@@ -26,8 +18,47 @@
     - deploy
     - preprod
 
+# Copy in server prepred the planTest.jmx
+- name: Copy file planTest.jmx
+  copy:
+    src: planTest.jmx
+    dest: "{{ house }}/new_folder"
+    owner: centos
+    remote_src: no
+  tags:
+    - preprod
+
+# Copy in server build the file daemon.json
+- name: Copy file daemon.json
+  copy:
+    src: daemon.json
+    dest: "/etc/docker"
+    owner: centos
+    remote_src: no
+  tags:
+    - build
+    - preprod
+
+- name: Restart service docker
+  service:
+    name: docker
+    state: restarted
+  tags:
+    - build
+    - preprod
+
+# connect to docker hub
+- name: Log into DockerHub
+  docker_login:
+    registry: "{{ ip_resistry }}:{{ port_resistry }}"
+    username: "{{ var_docker_hub_login }}"
+    password: "{{ var_docker_hub_password }}"
+  tags:
+    - build
+    - preprod
+
 # Example git checkout from Ansible Playbooks
-- name: load the source code in github
+- name: git clone the source code in github
   git:
     repo: "{{ var_repository_github }}"
     dest: "{{ house }}/new_folder"
@@ -39,25 +70,13 @@
   tags:
     - build
 
-- name: load the source code test_jmeter in github
-  git:
-    repo: "{{ repo_test_jmeter }}"
-    dest: "{{ house }}/new_folder"
-    key_file: "{{ house }}/.ssh/id_rsa"
-    accept_hostkey: yes
-    force: yes
-    version: "{{ repository_brach }}"
-    recursive: no
-  tags:
-    - preprod
-
 # Build image Dockerfile-app   
 - name: Build an image Dockerfile-app
   docker_image:
     build:
       path: "{{ house }}/new_folder"
       dockerfile: Dockerfile-app
-    name: "{{ var_docker_hub_login }}/app-image"
+    name: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image"
     tag: "{{ repository_tag }}"
   tags:
     - build
@@ -68,7 +87,7 @@
     build:
       path: "{{ house }}/new_folder"
       dockerfile: Dockerfile-mysql
-    name: "{{ var_docker_hub_login }}/mysql-image"
+    name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
     tag: "{{ repository_tag }}"
   tags:
     - build
@@ -76,22 +95,23 @@
 # Push Dockerfile-app image it to Docker Hub
 - name: Push Dockerfile-app image
   docker_image:
-    path: "{{ house }}/new_folder/Dockerfile-app"
-    name: "{{ var_docker_hub_login }}/app-image"
+    path: "{{ house }}/new_folder"
+    dockerfile: Dockerfile-app
+    name: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image"
     push: yes
     tag: "{{ repository_tag }}"
   tags:
-    - build
+    - push
 
 # Push Dockerfile-mysql image it to Docker Hub 
 - name: Push Dockerfile-mysql image
   docker_image:
     path: "{{ house }}/new_folder/Dockerfile-mysql"
-    name: "{{ var_docker_hub_login }}/mysql-image"
+    name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
     push: yes
     tag: "{{ repository_tag }}"
   tags:
-    - build
+    - push
 
 # creact network   
 - name: Create a network
@@ -106,7 +126,7 @@
 - name: Create a data container phonebook-mysql
   docker_container:
     name: phonebook-mysql
-    image: "{{ var_docker_hub_login }}/mysql-image:{{ repository_tag }}"
+    image: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image:{{ repository_tag }}"
     state: started
     networks:
       - name: phone_network
@@ -125,7 +145,7 @@
 - name: Create a data container phonebook-app
   docker_container:
     name: phonebook-app
-    image: "{{ var_docker_hub_login }}/app-image:{{ repository_tag }}"
+    image: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image:{{ repository_tag }}"
     state: started
     networks:
       - name: phone_network
