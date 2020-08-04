@@ -47,6 +47,7 @@
   tags:
     - build
     - preprod
+    - prod
 
 # Example git checkout from Ansible Playbooks
 - name: git clone the source code in github
@@ -69,7 +70,6 @@
     password: "{{ var_docker_hub_password }}"
   tags:
     - build
-    - preprod
 
 # Build image Dockerfile-app   
 - name: Build an image Dockerfile-app
