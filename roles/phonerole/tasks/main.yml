@@ -38,6 +38,7 @@
   tags:
     - build
     - preprod
+    - prod
 
 - name: Restart service docker
   service:
