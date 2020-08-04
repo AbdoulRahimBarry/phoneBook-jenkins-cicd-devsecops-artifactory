@@ -37,6 +37,7 @@
     remote_src: no
   tags:
     - build
+    - preprod
 
 - name: Restart service docker
   service:
