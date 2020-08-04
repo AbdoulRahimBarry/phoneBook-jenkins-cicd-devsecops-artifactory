@@ -7,16 +7,33 @@
     - build
     - preprod
 
-# Copy private keys in target
-- name: Copy file with owner and permissions
-  copy:
-    content: "{{ var_my_private_key }}"
-    dest: "{{ house }}/.ssh/id_rsa"
-    owner: centos
-  tags:
-    - build
-    - deploy
-    - preprod
+# Block build, prepred and deploy
+- name: Block build, prepred and deploy
+  block:
+    # Copy private keys in target
+    - name: Copy file with owner and permissions
+      copy:
+        content: "{{ var_my_private_key }}"
+        dest: "{{ house }}/.ssh/id_rsa"
+        owner: centos
+
+    # Copy in server build the file daemon.json
+    - name: Copy file daemon.json
+      copy:
+        src: daemon.json
+        dest: "/etc/docker"
+        owner: centos
+        remote_src: no
+
+    # Restart docker service
+    - name: Restart service docker
+      service:
+        name: docker
+        state: restarted
+      tags:
+        - build
+        - preprod
+        - deploy
 
 # Copy in server prepred the planTest.jmx
 - name: Copy file planTest.jmx
@@ -28,40 +45,6 @@
   tags:
     - preprod
 
-# Copy in server build the file daemon.json
-- name: Copy file daemon.json
-  copy:
-    src: daemon.json
-    dest: "/etc/docker"
-    owner: centos
-    remote_src: no
-  tags:
-    - build
-    - preprod
-    - deploy
-
-- name: Restart service docker
-  service:
-    name: docker
-    state: restarted
-  tags:
-    - build
-    - preprod
-    - deploy
-
-# Example git checkout from Ansible Playbooks
-- name: git clone the source code in github
-  git:
-    repo: "{{ var_repository_github }}"
-    dest: "{{ house }}/new_folder"
-    key_file: "{{ house }}/.ssh/id_rsa"
-    accept_hostkey: yes
-    force: yes
-    version: "{{ repository_brach }}"
-    recursive: no
-  tags:
-    - build
-
 # connect to private registry
 - name: Log into private registry
   docker_login:
@@ -72,48 +55,61 @@
     - build
     - deploy
 
-# Build image Dockerfile-app   
-- name: Build an image Dockerfile-app
-  docker_image:
-    build:
+# Block build
+- block:
+  - name: Block build, prepred and deploy
+  # Example git checkout from Ansible Playbooks
+  - name: git clone the source code in github
+    git:
+      repo: "{{ var_repository_github }}"
+      dest: "{{ house }}/new_folder"
+      key_file: "{{ house }}/.ssh/id_rsa"
+      accept_hostkey: yes
+      force: yes
+      version: "{{ repository_brach }}"
+      recursive: no
+
+  # Build image Dockerfile-app   
+  - name: Build an image Dockerfile-app
+    docker_image:
+      build:
+        path: "{{ house }}/new_folder"
+        dockerfile: Dockerfile-app
+      name: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image"
+      tag: "{{ repository_tag }}"
+
+  # Build image Dockerfile-mysql   
+  - name: Build an image Dockerfile-mysql
+    docker_image:
+      build:
+        path: "{{ house }}/new_folder"
+        dockerfile: Dockerfile-mysql
+      name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
+      tag: "{{ repository_tag }}"
+    tags:
+      -  build
+
+# Block push
+- block:
+  - name: Block push
+  # Push Dockerfile-app image it to Docker Hub
+  - name: Push Dockerfile-app image
+    docker_image:
       path: "{{ house }}/new_folder"
       dockerfile: Dockerfile-app
-    name: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image"
-    tag: "{{ repository_tag }}"
-  tags:
-    - build
+      name: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image"
+      push: yes
+      tag: "{{ repository_tag }}"
 
-# Build image Dockerfile-mysql   
-- name: Build an image Dockerfile-mysql
-  docker_image:
-    build:
-      path: "{{ house }}/new_folder"
-      dockerfile: Dockerfile-mysql
-    name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
-    tag: "{{ repository_tag }}"
-  tags:
-    - build
-
-# Push Dockerfile-app image it to Docker Hub
-- name: Push Dockerfile-app image
-  docker_image:
-    path: "{{ house }}/new_folder"
-    dockerfile: Dockerfile-app
-    name: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image"
-    push: yes
-    tag: "{{ repository_tag }}"
-  tags:
-    - push
-
-# Push Dockerfile-mysql image it to Docker Hub 
-- name: Push Dockerfile-mysql image
-  docker_image:
-    path: "{{ house }}/new_folder/Dockerfile-mysql"
-    name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
-    push: yes
-    tag: "{{ repository_tag }}"
-  tags:
-    - push
+  # Push Dockerfile-mysql image it to Docker Hub 
+  - name: Push Dockerfile-mysql image
+    docker_image:
+      path: "{{ house }}/new_folder/Dockerfile-mysql"
+      name: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image"
+      push: yes
+      tag: "{{ repository_tag }}"
+    tags:
+      - push
 
 # creact network   
 - name: Create a network
@@ -124,39 +120,37 @@
     - preprod
     - build
 
-# deploy phonebook-mysql   
-- name: Create a data container phonebook-mysql
-  docker_container:
-    name: phonebook-mysql
-    image: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image:{{ repository_tag }}"
-    state: started
-    networks:
-      - name: phone_network
-  tags:
-    - deploy
-    - preprod
+# Block prepred and prepred
+- block:
+  - name: Block prepred and deploy
+  # deploy phonebook-mysql   
+  - name: Create a data container phonebook-mysql
+    docker_container:
+      name: phonebook-mysql
+      image: "{{ ip_resistry }}:{{ port_resistry }}/barry/mysql-image:{{ repository_tag }}"
+      state: started
+      networks:
+        - name: phone_network
 
-- name: sleep for 30 seconds and continue with play
-  wait_for:
-    timeout: 30
-  tags:
-    - deploy
-    - preprod
+  # Waite for 
+  - name: sleep for 30 seconds and continue with play
+    wait_for:
+      timeout: 30
 
-# deploy api  
-- name: Create a data container phonebook-app
-  docker_container:
-    name: phonebook-app
-    image: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image:{{ repository_tag }}"
-    state: started
-    networks:
-      - name: phone_network
-    ports:
-     - "8181:8181"
-    restart: yes
-  tags:
-    - deploy
-    - preprod
+  # deploy api  
+  - name: Create a data container phonebook-app
+    docker_container:
+      name: phonebook-app
+      image: "{{ ip_resistry }}:{{ port_resistry }}/barry/app-image:{{ repository_tag }}"
+      state: started
+      networks:
+        - name: phone_network
+      ports:
+       - "8181:8181"
+      restart: yes
+    tags:
+      - deploy
+      - preprod
 
 - name: Check that you can connect (GET) to a page and it returns a status 200
   uri:
