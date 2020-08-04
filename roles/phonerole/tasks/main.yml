@@ -48,16 +48,6 @@
     - build
     - preprod
 
-# connect to docker hub
-- name: Log into DockerHub
-  docker_login:
-    registry: "{{ ip_resistry }}:{{ port_resistry }}"
-    username: "{{ var_docker_hub_login }}"
-    password: "{{ var_docker_hub_password }}"
-  tags:
-    - build
-    - preprod
-
 # Example git checkout from Ansible Playbooks
 - name: git clone the source code in github
   git:
@@ -70,6 +60,16 @@
     recursive: no
   tags:
     - build
+
+# connect to private registry
+- name: Log into private registry
+  docker_login:
+    registry: "{{ ip_resistry }}:{{ port_resistry }}"
+    username: "{{ var_docker_hub_login }}"
+    password: "{{ var_docker_hub_password }}"
+  tags:
+    - build
+    - preprod
 
 # Build image Dockerfile-app   
 - name: Build an image Dockerfile-app
