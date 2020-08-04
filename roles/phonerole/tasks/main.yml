@@ -5,6 +5,7 @@
     state: directory
   tags:
     - build
+    -preprod
 
 # Copy private keys in target    
 - name: Copy file with owner and permissions
@@ -44,6 +45,7 @@
     state: restarted
   tags:
     - build
+    - preprod
 
 # connect to docker hub
 - name: Log into DockerHub
