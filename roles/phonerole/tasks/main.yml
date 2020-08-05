@@ -33,7 +33,7 @@
   - name: Copy file planTest.jmx
     copy:
       src: planTest.jmx
-      dest: "{{ house }}/new_folder"
+      dest: "{{ house }}"
       owner: centos
       remote_src: no
 
