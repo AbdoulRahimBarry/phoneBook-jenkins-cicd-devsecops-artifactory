@@ -28,3 +28,6 @@ app_image: "app-image"
 # variable container
 phonebook_mysql: "phonebook-mysql"
 phonebook_app: "phonebook-app"
+
+# creat folder
+new_folder: "new_folder"

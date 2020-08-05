@@ -29,16 +29,23 @@
     - preprod
     - deploy
 
-- name: Copy file planTest.jmx
-  copy:
-    src: planTest.jmx
-    dest: "{{ house }}/new_folder"
-    owner: centos
-    remote_src: no
+- block:
+  - name: Copy file planTest.jmx
+    copy:
+      src: planTest.jmx
+      dest: "{{ house }}"
+      owner: centos
+      remote_src: no
+
+  - name: Copy file file.jtl
+    copy:
+      src: file.jtl
+      dest: "{{ house }}"
+      owner: centos
+      remote_src: no
   tags:
     - preprod
 
-# connect to private registry
 - name: Log into private registry
   docker_login:
     registry: "{{ ip_resistry }}:{{ port_resistry }}"
