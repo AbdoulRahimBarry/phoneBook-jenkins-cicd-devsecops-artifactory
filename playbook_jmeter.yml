@@ -19,7 +19,7 @@
   tasks:
     - name: Download apache-jmeter-5.3
       get_url:
-        url: http://www.gtlib.gatech.edu/pub/apache//jmeter/binaries/apache-jmeter-5.3.tgz
+        url: "http://www.gtlib.gatech.edu/pub/apache//jmeter/binaries/apache-jmeter-5.3.tgz"
         dest: "/home/centos/{{ new_folder }}"
 
     - name: Unarchive a file that is already on the remote machine
