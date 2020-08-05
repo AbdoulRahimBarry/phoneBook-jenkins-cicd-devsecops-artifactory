@@ -107,7 +107,7 @@
 - block:
   - name: Create a data container phonebook-mysql
     docker_container:
-      name: {{ phonebook_mysql }}
+      name: "{{ phonebook_mysql }}"
       image: "{{ ip_resistry }}:{{ port_resistry }}/{{ barry }}/{{ mysql_image }}:{{ repository_tag }}"
       state: started
       networks:
@@ -119,7 +119,7 @@
 
   - name: Create a data container phonebook-app
     docker_container:
-      name: {{ phonebook_app }}
+      name: "{{ phonebook_app }}"
       image: "{{ ip_resistry }}:{{ port_resistry }}/{{ barry }}/{{ app_image }}:{{ repository_tag }}"
       state: started
       networks:
