@@ -19,3 +19,12 @@ port_preprod: "8181"
 
 repository_brach: "master"
 repository_tag: "1.0"
+
+# variable images
+barry: "barry"
+mysql-image: "mysql-image"
+app-image: "app-image"
+
+# variable container
+phonebook-mysql: "phonebook-mysql"
+phonebook-app: "phonebook-app"
