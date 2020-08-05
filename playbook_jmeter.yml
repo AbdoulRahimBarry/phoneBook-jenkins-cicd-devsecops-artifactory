@@ -29,6 +29,6 @@
         remote_src: yes
 
     - name: Run a command shell
-      shell: apache-jmeter-5.3/bin/jmeter.sh -n -t /home/centos/planTest.jmx -l /home/centos/file.jtl"
+      shell: apache-jmeter-5.3/bin/jmeter.sh -n -t /home/centos/planTest.jmx -l /home/centos/file.jtl
       args:
         warn: no
